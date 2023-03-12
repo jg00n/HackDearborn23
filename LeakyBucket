@@ -1,0 +1,33 @@
+# This class allows us to use add_packet() function, which will either fill our bucket or lower. the argument we send within it is a true or false which is from the debounce() function.
+##it will return a true or false for us to interact with the vehicle(shut car if false aka water overflow aka problem)
+## extra note, to implement plus or minuses to change water in bucket, maybe mess with the level formulas below
+## instead of incrementing by one, maybe 5 and -2. AkA 4 - 6 lines under add_packet function
+import time
+
+##what you will use is add_packet() ##from debounce's valid tests within it's loop. add packet will
+## return a boolean, if false, we overfilled and have an issue.
+
+class LeakyBucket:
+	def _init_(self, capacity, rate):
+		self.capacity = capacity
+		self.rate = rate ## 
+		self.last_update = time.monotonic()
+		self.level = 0
+	
+	##send valid test, return if we overfilled bucket aka if return is true, we passed our limit and needa react
+	##would be activated aka add_packet() called everytime our debounce algo sends an event. if we fell, error found
+	
+	def add_packet(self, packet_size) ##packet size is basically true or false from our debounce output, if true that means our test was beyond max_value so we make a positive value here (maybe +5), if negative aka false, time will lower bucket level (maybe -2 instead of below's time lower)
+		current_time = time.monotonic()
+		time_since_last_update = current_time - self.last_update
+		self.last_update = current_time
+
+		self.level -= time_since_last_update * self.rate
+		self.level = max(self.level, 0)
+		self.level += packet_size
+
+		if self.level > self.capacity:
+			self.level = self.capacity
+			return false ##aka return that we have a problem
+		else:
+			return True ##return no problem met#reached yet

@@ -1,0 +1,16 @@
+import time
+class Debouncer:
+	def _init_(self, threshold):
+		self.threshold = threshold
+		self.last_time = 0;
+	
+	##called everytime we check#bring in our sensors, returns boolean, true if meets time constraint for valid signal so this signal
+	##is treated as valid signal and it triggers a addpacket() for leaky bucket
+	def debounce(self):
+		current_time = time.monotonic()
+		if current_time - self.last_time > self.threshold:
+			self.last_time = current_time
+			return True
+		return False
+
+
