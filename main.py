@@ -99,7 +99,17 @@ while True:
     clock.tick(60)
     
 
+debouncer = Debouncer(.25)
+leakyBucket = LeakyBucket(5, 1)
+def my_loop():
+    outOfRange = False
 
+    while True:
+        if debouncer.debounce():
+            if sensorCheck():
+                outOfRange = True
+            if add_packet(outOfRange):
+                return True
            
     
 

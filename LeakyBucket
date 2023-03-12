@@ -28,6 +28,6 @@ class LeakyBucket:
 
 		if self.level > self.capacity:
 			self.level = self.capacity
-			return false ##aka return that we have a problem
+			return True ##aka return that we have a problem
 		else:
-			return True ##return no problem met#reached yet
+			return False ##return no problem met#reached yet
