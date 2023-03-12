@@ -1,11 +1,12 @@
-import pygame
+import pygame #pygame, sys, matplotlib
 import sys
-
+import matplotlib.pyplot as plt
+#initialize pygame
 pygame.init()
 
 # Set up the screen
-screen_width = 800
-screen_height = 600
+screen_width = 900
+screen_height = 700
 screen = pygame.display.set_mode((screen_width, screen_height))
 pygame.display.set_caption('Hydrogen Fuel Cell Simulator')
 
@@ -15,13 +16,17 @@ GREY = (169, 169, 169)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+slow = 2
+medium = 4
+large = 6
 
-# Set up the car
+# Set up the car object
 car_width = 50
 car_height = 80
 car = pygame.Surface((car_width, car_height))
 car.fill(RED)
 car_rect = car.get_rect(center=(screen_width//2, screen_height//2))
+
 
 # Set up the movement controls
 car_speed = 3
@@ -92,6 +97,7 @@ while True:
     # Limit the frame rate
     clock = pygame.time.Clock()
     clock.tick(60)
+    
 
 
            
