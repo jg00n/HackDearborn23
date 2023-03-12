@@ -1,0 +1,25 @@
+# Sensor object for python 
+# it has an update_value() function which will change our value for sensor to retest
+import random
+
+class Sensor:
+	def _init_(self, id, name, value, max_value, min_value, value_range):
+		self.id = id
+		self.name = name
+		self.value = value
+		self.max_value = max_value
+		self.min_value = min_value
+		self.value_range = value_range
+
+	def update_value(self):
+		
+		new_value = random.randint(*self.value_range)
+
+		self.value = new_value
+
+
+#example of how to create an sensor object
+#  h2_sensor_temperature = Sensor(1, "Temperature", 20, 100, 0, (18,25))
+
+#to use function
+#  temperature_sensor.update_value()
