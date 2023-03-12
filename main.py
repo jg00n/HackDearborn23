@@ -107,7 +107,6 @@ while True:
         car_rect.y -= car_speed
     elif move_down:
         car_rect.y += car_speed
-
     # Update the road path
     prev_position = (car_rect.x + car_width/2, car_rect.y + car_height/2)
     road_path.append(prev_position)
@@ -124,14 +123,7 @@ while True:
         line_rect.top = i
         pygame.draw.rect(screen, WHITE, line_rect)
         
-    if car_rect.left < road_rect.left + car_width / 2:
-        car_rect.left = road_rect.left + car_width / 2
-    elif car_rect.right > road_rect.right - car_width / 2:
-        car_rect.right = road_rect.right - car_width / 2
-    if car_rect.top < road_rect.top + car_height / 2:
-        car_rect.top = road_rect.top + car_height / 2
-    elif car_rect.bottom > road_rect.bottom - car_height / 2:
-        car_rect.bottom = road_rect.bottom - car_height / 2
+
 
     # Draw the car
     screen.blit(sprite_image, car_rect)
@@ -155,7 +147,15 @@ while True:
     screen.blit(medium_text, (medium_button.left + (button_width - medium_text.get_width()) // 2, medium_button.top + (button_height - medium_text.get_height()) // 2))
     screen.blit(fast_text, (fast_button.left + (button_width - fast_text.get_width()) // 2, fast_button.top + (button_height - fast_text.get_height()) // 2))
 
-    
+    if car_rect.left < road_rect.left + (car_width / 2):
+        car_rect.left = road_rect.left + (car_width / 2)
+    elif car_rect.right > road_rect.right - (car_width / 2):
+        car_rect.right = road_rect.right - (car_width / 2)
+    if car_rect.top < road_rect.top + (car_height / 2):
+        car_rect.top = road_rect.bottom - (car_height / 2)
+    elif car_rect.bottom > road_rect.bottom - (car_height / 2):
+        car_rect.bottom = road_rect.top + (car_height / 2
+        
     checkbox_size = 20
     h2_sensor_value = 42
     temperature_value = 72
