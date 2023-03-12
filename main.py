@@ -1,8 +1,14 @@
-import pygame #pygame, sys, matplotlib
+import pygame
+#pygame, sys, matplotlib
 import sys
 import matplotlib.pyplot as plt
 #initialize pygame
 pygame.init()
+sprite_image = pygame.image.load('file.png')
+
+    
+
+
 
 # Set up the screen
 screen_width = 900
@@ -24,9 +30,7 @@ fast = 6
 # Set up the car object
 car_width = 50
 car_height = 80
-car = pygame.Surface((car_width, car_height))
-car.fill(RED)
-car_rect = car.get_rect(center=(screen_width//2, screen_height//2))
+car_rect = sprite_image.get_rect(center=(screen_width//2, screen_height//2))
 
 
 # Set up the movement controls
@@ -130,7 +134,7 @@ while True:
         car_rect.bottom = road_rect.bottom - car_height / 2
 
     # Draw the car
-    screen.blit(car, car_rect)
+    screen.blit(sprite_image, car_rect)
     
     
     #draw the buttons 
@@ -170,15 +174,15 @@ while True:
     h2_sensor_label = font.render("h2_sensor: " + str(h2_sensor_value), True, BLACK)
     temperature_label = font.render("Temperature: " + str(temperature_value), True, BLACK)
     valves_label = font.render("Valves: " + valves_value, True, BLACK)
-    oxygen_sensor_label = font.render("Oxygen Sensor: " + str(oxygen_sensor_value), True, BLACK)
+    oxygen_sensor_label = font.render("O^2 Sensor: " + str(oxygen_sensor_value), True, BLACK)
     pressure_label = font.render("Pressure: " + str(pressure_value), True, BLACK)
 
     # Draw the labels
-    screen.blit(h2_sensor_label, (600, 50))
-    screen.blit(temperature_label, (600, 100))
-    screen.blit(valves_label, (600, 150))
-    screen.blit(oxygen_sensor_label, (600, 200))
-    screen.blit(pressure_label, (600, 250))
+    screen.blit(h2_sensor_label, (700, 50))
+    screen.blit(temperature_label, (700, 100))
+    screen.blit(valves_label, (700, 150))
+    screen.blit(oxygen_sensor_label, (700, 200))
+    screen.blit(pressure_label, (700, 250))
     
     pygame.display.update()
 
