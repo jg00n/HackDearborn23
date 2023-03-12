@@ -16,9 +16,10 @@ GREY = (169, 169, 169)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 RED = (255, 0, 0)
+BLACK1 = '#0d0d0d'
 slow = 2
 medium = 4
-large = 6
+fast = 6
 
 # Set up the car object
 car_width = 50
@@ -29,12 +30,30 @@ car_rect = car.get_rect(center=(screen_width//2, screen_height//2))
 
 
 # Set up the movement controls
-car_speed = 3
+car_speed = slow
+def change_speed(speed):
+    global car_speed
+    car_speed = speed
+ 
+slow_button = pygame.Rect(50, 50, 100, 50)
+medium_button = pygame.Rect(50, 125, 100, 50)
+fast_button = pygame.Rect(50, 50, 50, 50)
+
+  
+# pygame.Rect(50,50,100,100)
+# pygame.Rect(30,30,30,30)
+# pygame.Rect(66,66,66,66)
+font = pygame.font.Font(None, 30)
+slow_text = font.render("Slow", True, WHITE)
+medium_text = font.render("Medium", True, WHITE)
+fast_text = font.render("Fast", True, WHITE)
+screen.blit(slow_text, (60, 55))
+screen.blit(medium_text, (60, 130))
+screen.blit(fast_text, (60, 205)) 
 move_left = False
 move_right = False
 move_up = False
 move_down = False
-
 # Set up the road path
 road_path = []
 
@@ -62,7 +81,19 @@ while True:
                 move_up = False
             elif event.key == pygame.K_s:
                 move_down = False
+            
 
+    mouse_pos = pygame.mouse.get_pos()
+    if slow_button.collidepoint(mouse_pos):
+        if event.type == pygame.MOUSEBUTTONUP:
+            change_speed(slow)
+    elif medium_button.collidepoint(mouse_pos):
+        if event.type == pygame.MOUSEBUTTONUP:
+            change_speed(medium)
+    elif fast_button.collidepoint(mouse_pos):
+        if event.type == pygame.MOUSEBUTTONUP:
+            change_speed(fast)
+    
     # Move the car
     if move_left:
         car_rect.x -= car_speed
@@ -88,15 +119,74 @@ while True:
     for i in range(0, screen_height, 50):
         line_rect.top = i
         pygame.draw.rect(screen, WHITE, line_rect)
+        
+    if car_rect.left < road_rect.left + car_width / 2:
+        car_rect.left = road_rect.left + car_width / 2
+    elif car_rect.right > road_rect.right - car_width / 2:
+        car_rect.right = road_rect.right - car_width / 2
+    if car_rect.top < road_rect.top + car_height / 2:
+        car_rect.top = road_rect.top + car_height / 2
+    elif car_rect.bottom > road_rect.bottom - car_height / 2:
+        car_rect.bottom = road_rect.bottom - car_height / 2
 
     # Draw the car
     screen.blit(car, car_rect)
+    
+    
+    #draw the buttons 
+    button_width = 100
+    button_height = 50
+    slow_button = pygame.Rect(75, 75, button_width, button_height)
+    medium_button = pygame.Rect(75, 155, button_width, button_height)
+    fast_button = pygame.Rect(75, 230, button_width, button_height)
 
+    light_grey = (200, 200, 200)
+
+    font = pygame.font.Font(None, 30)
+    slow_text = font.render("Slow", True, WHITE)
+    medium_text = font.render("Medium", True, WHITE)
+    fast_text = font.render("Fast", True, WHITE)
+
+    screen.blit(slow_text, (slow_button.left + (button_width - slow_text.get_width()) // 2, slow_button.top + (button_height - slow_text.get_height()) // 2))
+    screen.blit(medium_text, (medium_button.left + (button_width - medium_text.get_width()) // 2, medium_button.top + (button_height - medium_text.get_height()) // 2))
+    screen.blit(fast_text, (fast_button.left + (button_width - fast_text.get_width()) // 2, fast_button.top + (button_height - fast_text.get_height()) // 2))
+
+    
+    checkbox_size = 20
+    h2_sensor_value = 42
+    temperature_value = 72
+    valves_value = "Open"
+    oxygen_sensor_value = 12.5
+    pressure_value = 100
+
+    # Set up the labels
+    h2_sensor_value = 42
+    temperature_value = 72
+    valves_value = "Open"
+    oxygen_sensor_value = 12.5
+    pressure_value = 100
+
+    # Set up the labels
+    h2_sensor_label = font.render("h2_sensor: " + str(h2_sensor_value), True, BLACK)
+    temperature_label = font.render("Temperature: " + str(temperature_value), True, BLACK)
+    valves_label = font.render("Valves: " + valves_value, True, BLACK)
+    oxygen_sensor_label = font.render("Oxygen Sensor: " + str(oxygen_sensor_value), True, BLACK)
+    pressure_label = font.render("Pressure: " + str(pressure_value), True, BLACK)
+
+    # Draw the labels
+    screen.blit(h2_sensor_label, (600, 50))
+    screen.blit(temperature_label, (600, 100))
+    screen.blit(valves_label, (600, 150))
+    screen.blit(oxygen_sensor_label, (600, 200))
+    screen.blit(pressure_label, (600, 250))
+    
     pygame.display.update()
 
     # Limit the frame rate
     clock = pygame.time.Clock()
     clock.tick(60)
+
+
     
 
 
