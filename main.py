@@ -1,107 +1,96 @@
-import pygame #pygame, sys, matplotlib
-import sys
-import matplotlib.pyplot as plt
-#initialize pygame
-pygame.init()
+import csv
 
-# Set up the screen
-screen_width = 900
-screen_height = 700
-screen = pygame.display.set_mode((screen_width, screen_height))
-pygame.display.set_caption('Hydrogen Fuel Cell Simulator')
+sensor_Manifest = 'sensor.csv'
 
-# Set up the colors
-GREEN = (34, 139, 34)
-GREY = (169, 169, 169)
-WHITE = (255, 255, 255)
-BLACK = (0, 0, 0)
-RED = (255, 0, 0)
-slow = 2
-medium = 4
-large = 6
+TEMP_MIN = 0
+TEMP_MAX = 100
+PRESURE_MIN = 0
+PRESURE_MAX = 100
 
-# Set up the car object
-car_width = 50
-car_height = 80
-car = pygame.Surface((car_width, car_height))
-car.fill(RED)
-car_rect = car.get_rect(center=(screen_width//2, screen_height//2))
+sensor_Veh = {'Temp': 0.0, 'Presh': 0, 'Status': True, 'Faulty': False}
+key_position = {
+  'ACC': True,
+  'RUN': False,
+  'CRANK': False,
+  'LOCKED': False  #if a sensor is faulty we will lock the position
+}
+ignition = True
 
 
-# Set up the movement controls
-car_speed = 3
-move_left = False
-move_right = False
-move_up = False
-move_down = False
+def Read_data():
+  try:
+    with open(sensor_Manifest, 'r') as sensor_log:
+      # Create CSV read object
+      sensor_in = csv.DictReader(sensor_log)
+      # print(type(sensor_in))
+      for line in sensor_in:
+        print(line)
+      # Hold information in dictionary
 
-# Set up the road path
-road_path = []
+      for key, value in sensor_Veh.items():
+        if key in sensor_in:
+          sensor_Veh[key] = sensor_in[key]
 
-# Game loop
-while True:
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            pygame.quit()
-            sys.exit()
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_a:
-                move_left = True
-            elif event.key == pygame.K_d:
-                move_right = True
-            elif event.key == pygame.K_w:
-                move_up = True
-            elif event.key == pygame.K_s:
-                move_down = True
-        elif event.type == pygame.KEYUP:
-            if event.key == pygame.K_a:
-                move_left = False
-            elif event.key == pygame.K_d:
-                move_right = False
-            elif event.key == pygame.K_w:
-                move_up = False
-            elif event.key == pygame.K_s:
-                move_down = False
-
-    # Move the car
-    if move_left:
-        car_rect.x -= car_speed
-    elif move_right:
-        car_rect.x += car_speed
-    if move_up:
-        car_rect.y -= car_speed
-    elif move_down:
-        car_rect.y += car_speed
-
-    # Update the road path
-    prev_position = (car_rect.x + car_width/2, car_rect.y + car_height/2)
-    road_path.append(prev_position)
-    current_position = (car_rect.x + car_width/2, car_rect.y + car_height/2)
-
-    # Draw the screen
-    screen.fill(GREEN)
-
-    # Draw the road
-    road_rect = pygame.Rect(screen_width/4, 0, screen_width/2, screen_height)
-    pygame.draw.rect(screen, GREY, road_rect)
-    line_rect = pygame.Rect(screen_width/2 - 2.5, 0, 5, 25)
-    for i in range(0, screen_height, 50):
-        line_rect.top = i
-        pygame.draw.rect(screen, WHITE, line_rect)
-
-    # Draw the car
-    screen.blit(car, car_rect)
-
-    pygame.display.update()
-
-    # Limit the frame rate
-    clock = pygame.time.Clock()
-    clock.tick(60)
-    
+  except FileNotFoundError:
+    print(f"No sensor manifest found!\n")
+    return
 
 
-           
-    
+def Write_data():
+  sensor_dict = {}
+  sensor_dict.update(sensor_Veh)
+
+  try:
+    with open(sensor_Manifest, 'w', newline='') as csv_file:
+      fieldnames = ['key', 'value']
+      writer = csv.DictWriter(csv_file, fieldnames=fieldnames)
+      writer.writeheader()
+      for key, value in sensor_dict.items():
+        try:
+          writer.writerow({'key': key, 'value': value})
+        except Exception as e:
+          print(f"Error: Unable to update {key}: {value}!")
+  except Exception as e:
+    print(f"Error connected to sensor manifest!: {e}")
 
 
+def Detect_Fault():
+  for key, value in sensor_Veh.items():  #can take it out
+    #call the leaking bucket algorethem instead
+    #if leaking bucket changes faulty to false
+    if key == 'Faulty':
+      if (value == True):
+        for key, valu in key_position.items():
+          key_position.update({key: False})
 
+
+#if the leaking bucket retrunes true after false , then the keyposition will be unstuck
+
+      if (value == False):
+        for key, value in key_position.items():
+          key_position.update({key: True})
+
+    if (key == 'Temp'):
+      if value < TEMP_MIN:
+        print("fault due to low temp")
+      if value > TEMP_MAX:
+        print("fault due to high temp")
+    if (key == 'Presh'):
+      if value < PRESURE_MIN:
+        print("fault due to low pressure")
+      if value > PRESURE_MAX:
+        print("fault due to High pressure")
+
+
+def main():
+  Read_data()
+  #call fun
+  Detect_Fault()
+  # for key, value in sensor_Veh.items():
+  #   print(key,"-",value)
+  for key, value in key_position.items():
+    print(key, "-", value)
+  #Write_data()
+
+
+main()
